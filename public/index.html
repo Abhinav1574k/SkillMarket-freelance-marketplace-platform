@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>SkillMarket - Freelance Marketplace</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- =========================
+       NAVBAR
+  ========================== -->
+
+  <header class="navbar">
+
+    <div class="nav-container">
+
+      <a href="#" class="logo" onclick="showHome()">
+        <span class="logo-icon">
+          <i class="fa-solid fa-bolt"></i>
+        </span>
+
+        Skill<span>Market</span>
+      </a>
+
+      <nav class="nav-links">
+
+        <a href="#" onclick="showHome()">
+          Marketplace
+        </a>
+
+        <a
+          href="#"
+          id="dashboardNav"
+          onclick="showDashboard()"
+          class="hidden"
+        >
+          Dashboard
+        </a>
+
+      </nav>
+
+      <div class="nav-actions">
+
+        <button
+          class="btn btn-outline"
+          id="loginBtn"
+          onclick="openAuthModal('login')"
+        >
+          Log In
+        </button>
+
+        <button
+          class="btn btn-primary"
+          id="registerBtn"
+          onclick="openAuthModal('register')"
+        >
+          Get Started
+        </button>
+
+        <div
+          id="userMenu"
+          class="user-menu hidden"
+        >
+          <button
+            class="user-button"
+            onclick="toggleUserMenu()"
+          >
+            <span id="userAvatar">
+              A
+            </span>
+
+            <span id="navUserName">
+              User
+            </span>
+
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+
+          <div
+            id="userDropdown"
+            class="user-dropdown hidden"
+          >
+            <button onclick="showDashboard()">
+              <i class="fa-solid fa-chart-line"></i>
+              Dashboard
+            </button>
+
+            <button onclick="logout()">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              Logout
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================
+       MAIN
+  ========================== -->
+
+  <main>
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+      <div class="hero-content">
+
+        <div class="hero-badge">
+          <i class="fa-solid fa-sparkles"></i>
+          Connect. Create. Grow.
+        </div>
+
+        <h1>
+          Find the perfect
+          <span>freelancer</span>
+          for your next project
+        </h1>
+
+        <p>
+          Discover talented professionals ready to bring your
+          ideas to life. From design and development to marketing
+          and business services.
+        </p>
+
+        <div class="hero-search">
+
+          <i class="fa-solid fa-magnifying-glass"></i>
+
+          <input
+            type="text"
+            id="heroSearch"
+            placeholder="What service are you looking for?"
+            oninput="syncSearch(this.value)"
+          >
+
+          <button
+            class="btn btn-primary"
+            onclick="searchFromHero()"
+          >
+            Search
+          </button>
+
+        </div>
+
+        <div class="popular-searches">
+
+          <span>Popular:</span>
+
+          <button onclick="quickSearch('Web Development')">
+            Web Development
+          </button>
+
+          <button onclick="quickSearch('Graphic Design')">
+            Graphic Design
+          </button>
+
+          <button onclick="quickSearch('Programming')">
+            Programming
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- MARKETPLACE -->
+
+    <section class="marketplace section">
+
+      <div class="section-heading">
+
+        <div>
+          <span class="section-label">
+            EXPLORE SERVICES
+          </span>
+
+          <h2>
+            Popular freelance services
+          </h2>
+
+          <p>
+            Find skilled professionals for every project.
+          </p>
+        </div>
+
+      </div>
+
+
+      <!-- FILTER BAR -->
+
+      <div class="filter-bar">
+
+        <div class="search-box">
+
+          <i class="fa-solid fa-magnifying-glass"></i>
+
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search services..."
+            oninput="loadGigs()"
+          >
+
+        </div>
+
+
+        <select
+          id="categoryFilter"
+          onchange="loadGigs()"
+        >
+
+          <option value="">
+            All Categories
+          </option>
+
+          <option value="Web Development">
+            Web Development
+          </option>
+
+          <option value="Graphic Design">
+            Graphic Design
+          </option>
+
+          <option value="Programming">
+            Programming
+          </option>
+
+          <option value="Digital Marketing">
+            Digital Marketing
+          </option>
+
+          <option value="Writing">
+            Writing
+          </option>
+
+          <option value="Video & Animation">
+            Video & Animation
+          </option>
+
+        </select>
+
+
+        <select
+          id="priceFilter"
+          onchange="loadGigs()"
+        >
+
+          <option value="">
+            Any Price
+          </option>
+
+          <option value="0-2500">
+            Under ₹2,500
+          </option>
+
+          <option value="2500-5000">
+            ₹2,500 - ₹5,000
+          </option>
+
+          <option value="5000-10000">
+            ₹5,000 - ₹10,000
+          </option>
+
+          <option value="10000-999999">
+            ₹10,000+
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- RESULTS -->
+
+      <div
+        id="resultsInfo"
+        class="results-info"
+      >
+        Loading services...
+      </div>
+
+
+      <div
+        id="gigGrid"
+        class="gig-grid"
+      ></div>
+
+
+      <div
+        id="emptyState"
+        class="empty-state hidden"
+      >
+
+        <div class="empty-icon">
+          <i class="fa-solid fa-box-open"></i>
+        </div>
+
+        <h3>
+          No services found
+        </h3>
+
+        <p>
+          Try changing your search or filters.
+        </p>
+
+        <button
+          class="btn btn-primary"
+          onclick="clearFilters()"
+        >
+          Clear Filters
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         DASHBOARD
+    ========================== -->
+
+    <section
+      id="dashboardSection"
+      class="dashboard-section section hidden"
+    >
+
+      <div class="section-heading">
+
+        <div>
+
+          <span class="section-label">
+            MY WORKSPACE
+          </span>
+
+          <h2 id="dashboardTitle">
+            Dashboard
+          </h2>
+
+          <p id="dashboardSubtitle">
+            Manage your freelance activity.
+          </p>
+
+        </div>
+
+        <button
+          class="btn btn-outline"
+          onclick="showHome()"
+        >
+          <i class="fa-solid fa-arrow-left"></i>
+          Marketplace
+        </button>
+
+      </div>
+
+
+      <!-- STAT CARDS -->
+
+      <div
+        id="dashboardStats"
+        class="stats-grid"
+      ></div>
+
+
+      <!-- FREELANCER ACTION -->
+
+      <div
+        id="freelancerActions"
+        class="dashboard-actions hidden"
+      >
+
+        <button
+          class="btn btn-primary"
+          onclick="openGigModal()"
+        >
+          <i class="fa-solid fa-plus"></i>
+          Create New Gig
+        </button>
+
+      </div>
+
+
+      <!-- ORDERS -->
+
+      <div class="dashboard-orders">
+
+        <div class="dashboard-card">
+
+          <div class="card-header">
+
+            <div>
+
+              <h3>
+                Orders
+              </h3>
+
+              <p>
+                Track your current orders and projects.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div id="ordersContainer"></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       AUTH MODAL
+  ========================== -->
+
+  <div
+    id="authModal"
+    class="modal hidden"
+  >
+
+    <div class="modal-overlay" onclick="closeAuthModal()"></div>
+
+    <div class="modal-card">
+
+      <button
+        class="modal-close"
+        onclick="closeAuthModal()"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="modal-header">
+
+        <div class="modal-icon">
+          <i class="fa-solid fa-user"></i>
+        </div>
+
+        <h2 id="authTitle">
+          Welcome back
+        </h2>
+
+        <p id="authSubtitle">
+          Login to continue.
+        </p>
+
+      </div>
+
+
+      <form
+        id="authForm"
+        onsubmit="handleAuth(event)"
+      >
+
+        <div
+          id="nameField"
+          class="form-group hidden"
+        >
+
+          <label>
+            Full Name
+          </label>
+
+          <input
+            type="text"
+            id="authName"
+            placeholder="Your full name"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Email
+          </label>
+
+          <input
+            type="email"
+            id="authEmail"
+            placeholder="you@example.com"
+            required
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Password
+          </label>
+
+          <input
+            type="password"
+            id="authPassword"
+            placeholder="••••••••"
+            required
+          >
+
+        </div>
+
+
+        <div
+          id="roleField"
+          class="form-group hidden"
+        >
+
+          <label>
+            I want to
+          </label>
+
+          <select id="authRole">
+
+            <option value="client">
+              Hire freelancers
+            </option>
+
+            <option value="freelancer">
+              Sell my services
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="btn btn-primary btn-full"
+          id="authSubmit"
+        >
+          Log In
+        </button>
+
+      </form>
+
+
+      <div class="auth-switch">
+
+        <span id="authSwitchText">
+          Don't have an account?
+        </span>
+
+        <button
+          onclick="switchAuthMode()"
+          id="authSwitchButton"
+        >
+          Create one
+        </button>
+
+      </div>
+
+
+      <!-- <div class="demo-login">
+
+        <strong>Demo accounts</strong>
+
+        <div>
+          Client:
+          <code>client@example.com</code>
+          /
+          <code>password123</code>
+        </div>
+
+        <div>
+          Freelancer:
+          <code>freelancer@example.com</code>
+          /
+          <code>password123</code>
+        </div>
+
+      </div> -->
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       ORDER MODAL
+  ========================== -->
+
+  <div
+    id="orderModal"
+    class="modal hidden"
+  >
+
+    <div
+      class="modal-overlay"
+      onclick="closeOrderModal()"
+    ></div>
+
+    <div class="modal-card">
+
+      <button
+        class="modal-close"
+        onclick="closeOrderModal()"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="modal-header">
+
+        <div class="modal-icon success">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+
+        <h2>
+          Place an Order
+        </h2>
+
+        <p>
+          Tell the freelancer about your project.
+        </p>
+
+      </div>
+
+
+      <div
+        id="orderGigInfo"
+        class="order-gig-info"
+      ></div>
+
+
+      <form onsubmit="placeOrder(event)">
+
+        <div class="form-group">
+
+          <label>
+            Project Requirements
+          </label>
+
+          <textarea
+            id="orderRequirements"
+            rows="5"
+            placeholder="Describe what you need..."
+            required
+          ></textarea>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="btn btn-primary btn-full"
+        >
+          Confirm Order
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       GIG MODAL
+  ========================== -->
+
+  <div
+    id="gigModal"
+    class="modal hidden"
+  >
+
+    <div
+      class="modal-overlay"
+      onclick="closeGigModal()"
+    ></div>
+
+    <div class="modal-card modal-large">
+
+      <button
+        class="modal-close"
+        onclick="closeGigModal()"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="modal-header">
+
+        <div class="modal-icon">
+          <i class="fa-solid fa-briefcase"></i>
+        </div>
+
+        <h2>
+          Create a New Gig
+        </h2>
+
+        <p>
+          Showcase your skills to potential clients.
+        </p>
+
+      </div>
+
+
+      <form onsubmit="createGig(event)">
+
+        <div class="form-grid">
+
+          <div class="form-group form-full">
+
+            <label>
+              Service Title
+            </label>
+
+            <input
+              type="text"
+              id="gigTitle"
+              placeholder="I will build a modern website"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Category
+            </label>
+
+            <select id="gigCategory" required>
+
+              <option value="">
+                Select category
+              </option>
+
+              <option value="Web Development">
+                Web Development
+              </option>
+
+              <option value="Graphic Design">
+                Graphic Design
+              </option>
+
+              <option value="Programming">
+                Programming
+              </option>
+
+              <option value="Digital Marketing">
+                Digital Marketing
+              </option>
+
+              <option value="Writing">
+                Writing
+              </option>
+
+              <option value="Video & Animation">
+                Video & Animation
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Price (₹)
+            </label>
+
+            <input
+              type="number"
+              id="gigPrice"
+              min="1"
+              placeholder="5000"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Delivery Time (days)
+            </label>
+
+            <input
+              type="number"
+              id="gigDelivery"
+              min="1"
+              placeholder="5"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Image URL
+            </label>
+
+            <input
+              type="url"
+              id="gigImage"
+              placeholder="https://..."
+            >
+
+          </div>
+
+
+          <div class="form-group form-full">
+
+            <label>
+              Description
+            </label>
+
+            <textarea
+              id="gigDescription"
+              rows="5"
+              placeholder="Describe your service..."
+              required
+            ></textarea>
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="btn btn-primary btn-full"
+        >
+          Publish Gig
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       TOAST
+  ========================== -->
+
+  <div
+    id="toast"
+    class="toast"
+  >
+
+    <i
+      id="toastIcon"
+      class="fa-solid fa-check"
+    ></i>
+
+    <span id="toastMessage">
+      Success
+    </span>
+
+  </div>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
